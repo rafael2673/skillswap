@@ -1,10 +1,10 @@
-package br.com.skillswap.skillswap;
+package br.com.skillswap.AuthService;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SkillswapApplicationTests {
+class AuthServiceApplicationTests {
 
 	@Test
 	void contextLoads() {

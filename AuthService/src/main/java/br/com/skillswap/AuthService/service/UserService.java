@@ -4,10 +4,10 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import br.com.skillswap.AuthService.dto.UserDTO;
 import br.com.skillswap.AuthService.model.User;
 import br.com.skillswap.AuthService.repository.UserRepository;
 
@@ -19,10 +19,14 @@ public class UserService {
     
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(); 
 
-    public User registerUser(User user) {
+    public UserDTO registerUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRegistrationDate(LocalDateTime.now());
-        return userRepository.save(user);
+        userRepository.save(user);
+        UserDTO userdto = new UserDTO(user.getUsername(), 
+        user.getEmail(), user.getRegistrationDate(), user.getLastLogin());
+
+        return userdto;
     }
 
     public Optional<User> findByUsername(String username) {

@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres  # Imagem oficial do PostgreSQL
+    restart: unless-stopped  # Reinicia automaticamente o contêiner em caso de falha
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD_DEV}  # Senha do banco de dados (substitua por uma senha segura)
+      POSTGRES_USER: ${DB_USER_DEV}  # Usuário padrão do PostgreSQL
+      POSTGRES_DB: ${DB_DATABASE_DEV}  # Nome do banco de dados (opcional)
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Persistente o volume de dados do banco
+    ports:
+      - "5432:5432"  # Mapeia a porta 5432 do contêiner para a porta 5432 do host
+
+volumes:
+  postgres_data: {}  # Define um volume sem nome para armazenar os dados do banco
+
