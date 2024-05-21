@@ -2,6 +2,7 @@ package br.com.skillswap.AuthService.model;
 
 import java.time.LocalDateTime;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,14 +17,17 @@ import lombok.Data;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
     @Column(nullable = false, unique = true)
     private String username;
     @Column(nullable = false, unique = true)
     private String email;
-    @Column(nullable = false)
-    private String passwordHash;
-    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(nullable = false, name="password_hash")
+    private String password;
+    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", name = "registration_date")
     private LocalDateTime registrationDate;
+    @Column(name="last_login")
     private LocalDateTime lastLogin;
+
 }

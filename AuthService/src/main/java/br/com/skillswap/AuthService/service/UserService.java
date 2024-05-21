@@ -1,8 +1,10 @@
 package br.com.skillswap.AuthService.service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +20,8 @@ public class UserService {
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(); 
 
     public User registerUser(User user) {
-        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRegistrationDate(LocalDateTime.now());
         return userRepository.save(user);
     }
 

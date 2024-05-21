@@ -5,7 +5,9 @@ spring:
         change-log: classpath:db/changelog/db.changelog-master.xml
 ---
 spring:
-    profiles: dev
+    config:
+        activate:
+            on-profile: dev
     datasource:
         url: ${DB_URL_DEV}
         username: ${DB_USERNAME_DEV}
@@ -14,7 +16,9 @@ spring:
 
 ---
 spring:
-    profiles: prod
+    config:
+        activate:
+            on-profile: prod
     datasource:
         url: ${DB_URL_PROD}
         username: ${DB_USERNAME_PROD}

@@ -23,6 +23,8 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@RequestBody User user){
+        System.out.println("O usuário é: " + user.getUsername() + "A senha é: " + user.getPassword());
+
         boolean emailExists = userService.findByEmail(user.getEmail()).isPresent();
         boolean usernameExists = userService.findByUsername(user.getUsername()).isPresent();
 
