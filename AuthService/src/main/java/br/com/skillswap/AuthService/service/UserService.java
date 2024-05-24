@@ -23,8 +23,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRegistrationDate(LocalDateTime.now());
         userRepository.save(user);
-        UserDTO userdto = new UserDTO(user.getUsername(), 
-        user.getEmail(), user.getRegistrationDate(), user.getLastLogin());
+        UserDTO userdto = new UserDTO(user);
 
         return userdto;
     }
