@@ -14,6 +14,21 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:latest
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: ${{ secrets.DB_NAME }}
+          POSTGRES_USER: ${{ secrets.DB_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        options: > 
+          --health-cmd "pg_isready -U ${{ secrets.DB_USER }} -d ${{ secrets.DB_NAME }}" 
+          --health-interval 10s 
+          --health-timeout 5s 
+          --health-retries 5
+
     steps:
     - name: Check out repository
       uses: actions/checkout@v3
@@ -32,8 +47,25 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven-
 
+    - name: Wait for PostgreSQL
+      run: |
+        until docker exec postgres pg_isready -U ${{ secrets.DB_USER }} -d ${{ secrets.DB_NAME }}; do
+          echo "Waiting for PostgreSQL to be ready..."
+          sleep 5
+        done
+
     - name: Build with Maven
       run: mvn -B package --file AuthService/pom.xml
 
-    - name: Run tests
-      run: mvn test --file AuthService/pom.xml
+    - name: Run tests with dev profile
+      env:
+        DB_URL_DEV: jdbc:postgresql://localhost:5432/${{ secrets.DB_NAME }}
+        DB_USERNAME_DEV: ${{ secrets.DB_USER }}
+        DB_PASSWORD_DEV: ${{ secrets.DB_PASSWORD }}
+      run: mvn test -Pdev --file AuthService/pom.xml
+
+    - name: List surefire reports
+      run: ls -l AuthService/target/surefire-reports/
+
+    - name: Display surefire reports
+      run: cat AuthService/target/surefire-reports/*.txt
