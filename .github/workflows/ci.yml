@@ -2,44 +2,35 @@ name: Workflow CI to skillswap
 
 on:
   push:
-    branches:
-      - main
-      - 'feature/**'
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        java-version: [17]
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+    - name: Check out repository
+      uses: actions/checkout@v3
 
-    - name: Set up JDK ${{ matrix.java-version }}
-      uses: actions/setup-java@v2
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
       with:
-        distribution: 'temurin'
-        java-version: ${{ matrix.java-version }}
+        java-version: '17'
+        distribution: 'adopt' # pode ser 'zulu', 'temurin', 'adopt', etc.
 
     - name: Cache Maven packages
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-maven-
 
-    - name: Install dependencies
-      run: mvn install -DskipTests
+    - name: Build with Maven
+      run: mvn -B package --file AuthService/pom.xml
 
     - name: Run tests
-      run: mvn test
-
-    - name: Package application
-      run: mvn package
+      run: mvn test --file AuthService/pom.xml
