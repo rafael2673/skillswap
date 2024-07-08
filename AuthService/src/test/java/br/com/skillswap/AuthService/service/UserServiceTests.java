@@ -2,29 +2,27 @@ package br.com.skillswap.AuthService.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import br.com.skillswap.AuthService.dto.UserDTO;
 import br.com.skillswap.AuthService.model.User;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
+import jakarta.transaction.Transactional;
 import jakarta.validation.ValidationException;
-import jakarta.validation.Validator;
 
+@SpringBootTest
+@ActiveProfiles("dev")
+@Transactional
 public class UserServiceTests {
 
-    private UserService userServiceMock = mock(UserService.class);
+    @Autowired
+    private UserService userService;
     
-    private Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @Test
     public void salvarUserComSucesso(){
@@ -33,42 +31,14 @@ public class UserServiceTests {
         user.setEmail("rafael@gmail.com");
         user.setPassword("teste123");
         user.setUsername("rafael26733");
-        user.setRegistrationDate(LocalDateTime.now());
         user.setLastLogin(LocalDateTime.now());
 
-        UserDTO userDTO = new UserDTO(user);
+        UserDTO userDTO = userService.registerUser(user);
 
-            when(userServiceMock.registerUser(any(User.class)))
-            .thenAnswer(invocation -> {
-                User argumentUser = invocation.getArgument(0);
-                Set<ConstraintViolation<User>> violations = validator.validate(argumentUser);
-                if (violations.isEmpty()) {
-                    return new UserDTO(argumentUser);
-                } else {
-                    throw new ValidationException("Usuário inválido");
-                }
-            });
+        UserDTO userDTO1 = new UserDTO(user);
+        userDTO1.setRegistrationDate(userDTO.getRegistrationDate());
 
-        assertEquals(userServiceMock.registerUser(user), userDTO);
-    }
-
-    @Test
-    public void salvarUserComSucessoSemErro(){
-        User user = new User();
-        user.setId(1L);
-        user.setEmail("rafael@gmail.com");
-        user.setPassword("teste123");
-        user.setUsername("rafael26733");
-        user.setRegistrationDate(LocalDateTime.now());
-        user.setLastLogin(LocalDateTime.now());
-
-        UserDTO userDTO = new UserDTO(user);
-
-        when(userServiceMock.registerUser(user)).thenReturn(userDTO);
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
-        
-        assertTrue(violations.isEmpty());
-        
+        assertEquals(userDTO1, userDTO);
     }
 
     @Test
@@ -80,14 +50,8 @@ public class UserServiceTests {
         user.setPassword("teste123");
         user.setUsername(""); 
         
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
-
-        if (!violations.isEmpty()) {
-            doThrow(ValidationException.class).when(userServiceMock).registerUser(user);
-        }
-        
         assertThrows(ValidationException.class, () -> {
-            userServiceMock.registerUser(user);
+            userService.registerUser(user);
         });
     }
 
@@ -100,15 +64,9 @@ public class UserServiceTests {
         user.setPassword("teste123");
         user.setUsername("user12345");
         
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
-
-        if (!violations.isEmpty()) {
-            
-            doThrow(ValidationException.class).when(userServiceMock).registerUser(user);
-        }
 
         assertThrows(ValidationException.class, () -> {
-            userServiceMock.registerUser(user);
+            userService.registerUser(user);
         });
     }
 
@@ -120,16 +78,9 @@ public class UserServiceTests {
         user.setEmail("rafaelgmail.com");
         user.setPassword("teste123");
         user.setUsername("user12345");
-        
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
-
-        if (!violations.isEmpty()) {
-            
-            doThrow(ValidationException.class).when(userServiceMock).registerUser(user);
-        }
 
         assertThrows(ValidationException.class, () -> {
-            userServiceMock.registerUser(user);
+            userService.registerUser(user);
         });
     }
 
@@ -142,15 +93,8 @@ public class UserServiceTests {
         user.setPassword("teste123");
         user.setUsername("us");
         
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
-
-        if (!violations.isEmpty()) {
-
-            doThrow(ValidationException.class).when(userServiceMock).registerUser(user);
-        }
-
         assertThrows(ValidationException.class, () -> {
-            userServiceMock.registerUser(user);
+            userService.registerUser(user);
         });
     }
     @Test
@@ -161,16 +105,10 @@ public class UserServiceTests {
         user.setEmail("rafael@gmail.com");
         user.setPassword("");
         user.setUsername("user1234");
-        
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
-
-        if (!violations.isEmpty()) {
-
-            doThrow(ValidationException.class).when(userServiceMock).registerUser(user);
-        }
+    
 
         assertThrows(ValidationException.class, () -> {
-            userServiceMock.registerUser(user);
+            userService.registerUser(user);
         });
     }
     @Test
@@ -182,15 +120,8 @@ public class UserServiceTests {
         user.setPassword("1234567");
         user.setUsername("user1234");
         
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
-
-        if (!violations.isEmpty()) {
-
-            doThrow(ValidationException.class).when(userServiceMock).registerUser(user);
-        }
-
         assertThrows(ValidationException.class, () -> {
-            userServiceMock.registerUser(user);
+            userService.registerUser(user);
         });
     }
 
