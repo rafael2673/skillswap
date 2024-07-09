@@ -55,14 +55,14 @@ jobs:
         done
 
     - name: Build with Maven
-      run: mvn -B package --file AuthService/pom.xml
+      run: mvn -D spring.profiles.active=dev -B package --file AuthService/pom.xml
 
     - name: Run tests with dev profile
       env:
         DB_URL_DEV: jdbc:postgresql://localhost:5432/${{ secrets.DB_NAME }}
         DB_USERNAME_DEV: ${{ secrets.DB_USER }}
         DB_PASSWORD_DEV: ${{ secrets.DB_PASSWORD }}
-      run: mvn test -Pdev --file AuthService/pom.xml
+      run: mvn test -D spring.profiles.active=dev --file AuthService/pom.xml
 
     - name: List surefire reports
       run: ls -l AuthService/target/surefire-reports/
