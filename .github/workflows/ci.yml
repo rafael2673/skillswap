@@ -51,7 +51,7 @@ jobs:
 
     - name: Wait for PostgreSQL
       run: |
-        until docker exec postgres pg_isready -U ${{ secrets.DB_USER }} -d ${{ secrets.DB_NAME }}; do
+        while ! pg_isready -h localhost -p 5432 -U ${{ secrets.DB_USER }} -d ${{ secrets.DB_NAME }}; do
           echo "Waiting for PostgreSQL to be ready..."
           sleep 5
         done
