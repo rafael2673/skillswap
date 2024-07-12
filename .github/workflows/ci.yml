@@ -57,6 +57,10 @@ jobs:
         done
 
     - name: Build with Maven
+      env:
+        DB_URL_DEV: jdbc:postgresql://localhost:5432/${{ secrets.DB_NAME }}
+        DB_USERNAME_DEV: ${{ secrets.DB_USER }}
+        DB_PASSWORD_DEV: ${{ secrets.DB_PASSWORD }}
       run: mvn -D spring.profiles.active=dev -B package --file AuthService/pom.xml
 
     - name: Run tests with dev profile
