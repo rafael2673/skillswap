@@ -13,7 +13,9 @@ spring:
         username: ${DB_USERNAME_DEV}
         password: ${DB_PASSWORD_DEV}
         driver-class-name: org.postgresql.Driver
-
+    security:
+        token:
+            secret: ${JWV_SECRET:my-secret-key}
 ---
 spring:
     config:

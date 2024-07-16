@@ -9,3 +9,7 @@ CREATE TABLE users (
     registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_login TIMESTAMP
 );
+
+-- changeset Rafael:002
+
+ALTER TABLE IF EXISTS users ADD COLUMN IF NOT EXISTS role VARCHAR(9) NOT NULL default 'USER';
