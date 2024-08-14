@@ -5,8 +5,7 @@ import br.com.skillswap.AuthService.model.Enum.UserRoles;
 import br.com.skillswap.AuthService.model.User;
 import br.com.skillswap.AuthService.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AuthorizationServiceTest {
 
     @Autowired
@@ -40,13 +40,26 @@ public class AuthorizationServiceTest {
 
     @BeforeEach
     public void setup() {
-        // userRepository.deleteAll();
-        testUser = new User();
-        testUser.setEmail("testuser@example.com");
-        testUser.setUsername("testuser");
-        testUser.setPassword(passwordEncoder.encode("password123"));
-        testUser.setRole(UserRoles.USER);
-        userRepository.save(testUser);
+        boolean email = userRepository.findByEmail("testuser@example.com").isPresent();
+        if (!email) {
+            testUser = new User();
+            testUser.setEmail("testuser@example.com");
+            testUser.setUsername("testuser");
+            testUser.setPassword(passwordEncoder.encode("password123"));
+            testUser.setRole(UserRoles.USER);
+            userRepository.save(testUser);
+        } else {
+            testUser = userRepository.findByEmail("testuser@example.com").get();
+        }
+
+    }
+
+    @AfterAll
+    public void deleteEmail(){
+        boolean email = userRepository.findByEmail("testuser@example.com").isPresent();
+        if(email) {
+            userRepository.delete(testUser);
+        }
     }
 
     @Test
