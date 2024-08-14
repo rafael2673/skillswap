@@ -10,6 +10,10 @@ CREATE TABLE users (
     last_login TIMESTAMP
 );
 
+-- rollback DROP TABLE users
+
 -- changeset Rafael:002
 
 ALTER TABLE IF EXISTS users ADD COLUMN IF NOT EXISTS role VARCHAR(9) NOT NULL default 'USER';
+
+-- rollback ALTER TABLE IF EXISTS users DROP COLUMN IF EXISTS role;
