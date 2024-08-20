@@ -52,7 +52,7 @@ public class User implements UserDetails {
 
 
     /**
-     * @return
+     * @return Collection<? extends GrantedAuthority>
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
