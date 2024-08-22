@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
-import PaginaInicial from "./pages/PaginaInicial";
+import Router from "./routes";
 
-const App: React.FC = () => <PaginaInicial />;
+const App: React.FC = () => <Router />;
 
 export default App;

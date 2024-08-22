@@ -1,8 +1,8 @@
 import React from "react";
 import { Box } from "@mui/material";
-import Section1 from "./sections/Section1";
-import Section2 from "./sections/Section2";
-import Section3 from "./sections/Section3";
+import Section1 from "./sectionPaginaInicial/Section1";
+import Section2 from "./sectionPaginaInicial/Section2";
+import Section3 from "./sectionPaginaInicial/Section3";
 
 const PaginaInicial: React.FC = () => (
   <Box sx={{ flexGrow: 1 }}>
