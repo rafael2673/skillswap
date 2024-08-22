@@ -1,12 +1,24 @@
 import React, { useState } from "react";
-import { Box, Container, Grid, useMediaQuery, useTheme } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Container,
+  Grid,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import Section1PaginaInicial from "./sectionPaginaInicial/Section1";
 import Section1Login from "./sectionLogin/Section1";
 import Section2Login from "./sectionLogin/Section2";
 import Section3Login from "./sectionLogin/Section3";
+import LinearIndeterminate from "../Components/LinearIndeterminate";
+import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
   const [value, setValue] = useState(0);
+  const [alert, setAlert] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -22,6 +34,18 @@ const Login: React.FC = () => {
       }}
     >
       <Section1PaginaInicial button={false} />
+      {loading && <LinearIndeterminate />}
+      {alert && (
+        <Alert
+          severity="error"
+          sx={{
+            position: "fixed",
+            margin: { xs: "13vh 0 0 14vw", md: "13vh 0 0 40vw" },
+          }}
+        >
+          {alert}
+        </Alert>
+      )}
       <Container maxWidth="md">
         <Grid container spacing={isSmallScreen ? 0 : 2}>
           <Grid
@@ -35,7 +59,12 @@ const Login: React.FC = () => {
             {value === 0 ? (
               <Section1Login onClick={onClick} />
             ) : value === 1 ? (
-              <Section2Login onClick={onClick} />
+              <Section2Login
+                onClick={onClick}
+                setAlert={setAlert}
+                setLoading={setLoading}
+                navigate={navigate}
+              />
             ) : (
               <Section3Login onClick={onClick} />
             )}

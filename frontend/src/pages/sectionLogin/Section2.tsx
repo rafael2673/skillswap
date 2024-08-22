@@ -7,29 +7,69 @@ import {
   IconButton,
   TextField,
   Typography,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import api from "../../services/api";
+import { AxiosError } from "axios";
+import { NavigateFunction } from "react-router-dom";
 
 interface Props {
   onClick(value: number): void;
+  setAlert: React.Dispatch<React.SetStateAction<string | null>>;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  navigate: NavigateFunction;
 }
 
-const Section2: React.FC<Props> = ({ onClick }: Props) => {
+const Section2: React.FC<Props> = ({
+  onClick,
+  setAlert,
+  setLoading,
+  navigate,
+}: Props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleLogin = () => {
     // Lógica de login aqui
-    console.log("Email:", email);
-    console.log("Password:", password);
+    setLoading(true);
+    api
+      .post("/login", {
+        email: email,
+        password: password,
+      })
+      .then((response) => {
+        localStorage.setItem("token", response.data.token);
+        navigate("/explorar")
+      })
+      .catch((error: AxiosError<{ message: string }>) => {
+        if (error.response) {
+          // Resposta com status fora do alcance 2xx
+          const errorMessage =
+            error.response.data?.message ||
+            `Erro de status ${error.response.status}, tente novamente mais tarde!`;
+
+          setAlert(errorMessage);
+        } else if (error.request) {
+          // Requisição foi feita, mas não houve resposta
+          setAlert("Erro de requisição, tente novamente mais tarde!");
+          console.error("Erro na requisição:", error.request);
+        } else {
+          // Algo aconteceu ao configurar a requisição
+          setAlert(`Erro: ${error.message}`);
+          console.error("Erro na configuração:", error.message);
+        }
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
-    <Box sx={{ height: {xs: "69vh", md: "75vh"}, backgroundColor: "#f5f5f5", padding: "3rem" }}>
+    <Box
+      sx={{
+        height: { xs: "69vh", md: "75vh" },
+        backgroundColor: "#f5f5f5",
+        padding: "3rem",
+      }}
+    >
       <IconButton aria-label="retornar" onClick={() => onClick(0)}>
         <KeyboardBackspaceIcon />
       </IconButton>
