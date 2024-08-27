@@ -38,8 +38,15 @@ const Section2: React.FC<Props> = ({
         password: password,
       })
       .then((response) => {
-        localStorage.setItem("token", response.data.token);
-        navigate("/explorar")
+        sessionStorage.setItem("accessToken", response.data.accessToken);
+        const date = Date.now();
+        const expirationTime = date + response.data.expiresIn * 1000;
+        const refreshExpiresIn = date + response.data.refreshExpiresIn * 1000;
+        sessionStorage.setItem("expirationTime", expirationTime.toString());
+        sessionStorage.setItem("refreshToken", response.data.refreshToken);
+        sessionStorage.setItem("refreshExpiresIn", refreshExpiresIn.toString());
+
+        navigate("/timeline")
       })
       .catch((error: AxiosError<{ message: string }>) => {
         if (error.response) {

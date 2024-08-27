@@ -3,6 +3,7 @@ package br.com.skillswap.AuthService.controller;
 import br.com.skillswap.AuthService.dto.*;
 import br.com.skillswap.AuthService.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -56,10 +57,36 @@ public class UserController {
         Authentication usernamePassword = new UsernamePasswordAuthenticationToken(user.email(), user.password());
         Authentication auth = this.authenticationManager.authenticate(usernamePassword);
 
-        String token = tokenService.generateToken((User) auth.getPrincipal());
+        User authenticatedUser = (User) auth.getPrincipal();
 
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+        String accessToken = tokenService.generateAccessToken(authenticatedUser);
+        String refreshToken = tokenService.generateRefreshToken(authenticatedUser);
+
+        long expiresIn = 15 * 60; // 15 minutos em segundos
+        long refreshExpiresIn = 7 * 24 * 60 * 60; // 7 dias em segundos
+
+        return ResponseEntity.ok(new LoginResponseDTO(accessToken, refreshToken, expiresIn, refreshExpiresIn));
     }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<LoginResponseDTO> refreshToken(@RequestBody RefreshTokenDTO refreshToken) {
+        System.out.println(refreshToken);
+
+        String email = tokenService.validateToken(refreshToken.refreshToken());
+
+        if (!email.isEmpty() && userService.findByEmail(email).isPresent()) {
+            User user = userService.findByEmail(email).get();
+            String newAccessToken = tokenService.generateAccessToken(user);
+
+            long expiresIn = 15 * 60; // 15 minutos em segundos
+            long refreshExpiresIn = 7 * 24 * 60 * 60; // 7 dias em segundos
+
+            return ResponseEntity.ok(new LoginResponseDTO(newAccessToken, refreshToken.refreshToken(), expiresIn, refreshExpiresIn));
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
 
 
 }
