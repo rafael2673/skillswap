@@ -9,65 +9,15 @@ import {
   Typography,
 } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-import api from "../../services/api";
-import { AxiosError } from "axios";
-import { NavigateFunction } from "react-router-dom";
 
 interface Props {
   onClick(value: number): void;
-  setAlert: React.Dispatch<React.SetStateAction<string | null>>;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  navigate: NavigateFunction;
+  handleLogin(email: string, password: string): void;
 }
 
-const Section2: React.FC<Props> = ({
-  onClick,
-  setAlert,
-  setLoading,
-  navigate,
-}: Props) => {
+const Section2: React.FC<Props> = ({ onClick, handleLogin }: Props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const handleLogin = () => {
-    // Lógica de login aqui
-    setLoading(true);
-    api
-      .post("/login", {
-        email: email,
-        password: password,
-      })
-      .then((response) => {
-        sessionStorage.setItem("accessToken", response.data.accessToken);
-        const date = Date.now();
-        const expirationTime = date + response.data.expiresIn * 1000;
-        const refreshExpiresIn = date + response.data.refreshExpiresIn * 1000;
-        sessionStorage.setItem("expirationTime", expirationTime.toString());
-        sessionStorage.setItem("refreshToken", response.data.refreshToken);
-        sessionStorage.setItem("refreshExpiresIn", refreshExpiresIn.toString());
-
-        navigate("/timeline")
-      })
-      .catch((error: AxiosError<{ message: string }>) => {
-        if (error.response) {
-          // Resposta com status fora do alcance 2xx
-          const errorMessage =
-            error.response.data?.message ||
-            `Erro de status ${error.response.status}, tente novamente mais tarde!`;
-
-          setAlert(errorMessage);
-        } else if (error.request) {
-          // Requisição foi feita, mas não houve resposta
-          setAlert("Erro de requisição, tente novamente mais tarde!");
-          console.error("Erro na requisição:", error.request);
-        } else {
-          // Algo aconteceu ao configurar a requisição
-          setAlert(`Erro: ${error.message}`);
-          console.error("Erro na configuração:", error.message);
-        }
-      })
-      .finally(() => setLoading(false));
-  };
 
   return (
     <Box
@@ -145,7 +95,7 @@ const Section2: React.FC<Props> = ({
               <Button
                 variant="contained"
                 color="violet"
-                onClick={handleLogin}
+                onClick={() => handleLogin(email, password)}
                 sx={{ marginTop: "1rem" }}
               >
                 Login

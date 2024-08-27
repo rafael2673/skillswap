@@ -17,6 +17,8 @@ import br.com.skillswap.AuthService.model.User;
 import br.com.skillswap.AuthService.service.UserService;
 import jakarta.validation.Valid;
 
+import java.time.LocalDateTime;
+
 /**
  * UserController
  */
@@ -59,6 +61,8 @@ public class UserController {
 
         User authenticatedUser = (User) auth.getPrincipal();
 
+        userService.changeLastLogin(authenticatedUser);
+
         String accessToken = tokenService.generateAccessToken(authenticatedUser);
         String refreshToken = tokenService.generateRefreshToken(authenticatedUser);
 
@@ -70,7 +74,6 @@ public class UserController {
 
     @PostMapping("/refresh-token")
     public ResponseEntity<LoginResponseDTO> refreshToken(@RequestBody RefreshTokenDTO refreshToken) {
-        System.out.println(refreshToken);
 
         String email = tokenService.validateToken(refreshToken.refreshToken());
 

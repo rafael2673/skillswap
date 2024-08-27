@@ -9,21 +9,56 @@ import {
   Typography,
 } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import api from "../../services/api";
+import { AxiosError } from "axios";
 
 interface Props {
   onClick(value: number): void;
+  handleLogin(email: string, password: string): void;
+  setAlert: React.Dispatch<React.SetStateAction<string | null>>;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Section3: React.FC<Props> = ({ onClick }: Props) => {
+const Section3: React.FC<Props> = ({
+  onClick,
+  handleLogin,
+  setAlert,
+  setLoading,
+}: Props) => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSignUp = () => {
     // Lógica de criação de conta aqui
-    console.log("Email:", email);
-    console.log("Username:", username);
-    console.log("Password:", password);
+    api
+      .post("/register", {
+        username,
+        email,
+        password,
+      })
+      .then(() => {
+        handleLogin(email, password);
+      })
+      .catch((error: AxiosError<{ message: string }>) => {
+        if (error.response) {
+          // Resposta com status fora do alcance 2xx
+          const errorMessage =
+            error.response.data?.message ||
+            `Erro de status ${error.response.status}, tente novamente mais tarde!`;
+
+          setAlert(errorMessage);
+        } else if (error.request) {
+          // Requisição foi feita, mas não houve resposta
+          setAlert("Erro de requisição, tente novamente mais tarde!");
+          console.error("Erro na requisição:", error.request);
+        } else {
+          // Algo aconteceu ao configurar a requisição
+          setAlert(`Erro: ${error.message}`);
+          console.error("Erro na configuração:", error.message);
+        }
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
