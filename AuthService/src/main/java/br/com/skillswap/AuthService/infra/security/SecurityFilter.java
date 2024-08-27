@@ -2,6 +2,7 @@ package br.com.skillswap.AuthService.infra.security;
 
 import br.com.skillswap.AuthService.repository.UserRepository;
 import br.com.skillswap.AuthService.service.TokenService;
+import br.com.skillswap.AuthService.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

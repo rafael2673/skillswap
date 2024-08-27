@@ -53,8 +53,7 @@ public class TokenService {
             return JWT.require(algorithm)
                     .withIssuer("AuthService")
                     .build()
-                    .verify(token)
-                    .getSubject();
+                    .verify(token).getSubject();
         } catch (JWTVerificationException ex) {
             return "";
         }

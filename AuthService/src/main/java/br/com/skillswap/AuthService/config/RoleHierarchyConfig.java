@@ -1,4 +1,4 @@
-package br.com.skillswap.AuthService.configuration;
+package br.com.skillswap.AuthService.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
