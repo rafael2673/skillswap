@@ -31,17 +31,14 @@ public class AuthorizationServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private TokenService tokenService;
-
-    @Autowired
     private ObjectMapper objectMapper;
 
     private User testUser;
 
     @BeforeEach
     public void setup() {
-        boolean email = userRepository.findByEmail("testuser@example.com").isPresent();
-        if (!email) {
+        boolean emailExists = userRepository.findByEmail("testuser@example.com").isPresent();
+        if (!emailExists) {
             testUser = new User();
             testUser.setEmail("testuser@example.com");
             testUser.setUsername("testuser");
@@ -51,13 +48,12 @@ public class AuthorizationServiceTest {
         } else {
             testUser = userRepository.findByEmail("testuser@example.com").get();
         }
-
     }
 
     @AfterAll
-    public void deleteEmail(){
-        boolean email = userRepository.findByEmail("testuser@example.com").isPresent();
-        if(email) {
+    public void cleanup() {
+        boolean emailExists = userRepository.findByEmail("testuser@example.com").isPresent();
+        if (emailExists) {
             userRepository.delete(testUser);
         }
     }
@@ -70,7 +66,10 @@ public class AuthorizationServiceTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(authDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").isNotEmpty());
+                .andExpect(jsonPath("$.accessToken").isNotEmpty())
+                .andExpect(jsonPath("$.refreshToken").isNotEmpty())
+                .andExpect(jsonPath("$.expiresIn").value(15 * 60))
+                .andExpect(jsonPath("$.refreshExpiresIn").value(7 * 24 * 60 * 60));
     }
 
     @Test
