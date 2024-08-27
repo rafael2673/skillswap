@@ -41,6 +41,11 @@ public class UserService {
         return new UserDTO(user);
     }
 
+    public void changeLastLogin(User user) {
+        user.setLastLogin(LocalDateTime.now());
+        userRepository.save(user);
+    }
+
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }

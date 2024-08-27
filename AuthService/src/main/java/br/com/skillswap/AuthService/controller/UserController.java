@@ -2,24 +2,21 @@ package br.com.skillswap.AuthService.controller;
 
 import br.com.skillswap.AuthService.dto.*;
 import br.com.skillswap.AuthService.service.TokenService;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import br.com.skillswap.AuthService.exception.EmailAlreadyExistsException;
 import br.com.skillswap.AuthService.exception.UsernameAlreadyExistsException;
 import br.com.skillswap.AuthService.model.User;
 import br.com.skillswap.AuthService.service.UserService;
 import jakarta.validation.Valid;
+
 
 /**
  * UserController
@@ -55,6 +52,43 @@ public class UserController {
         User user = new User(registration);
         UserDTO registeredUser = userService.registerUser(user, registration.getFirstName(), registration.getLastName());
         return ResponseEntity.ok(registeredUser);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDTO> authentication(@Valid @RequestBody AuthenticationDTO user) {
+
+        Authentication usernamePassword = new UsernamePasswordAuthenticationToken(user.email(), user.password());
+        Authentication auth = this.authenticationManager.authenticate(usernamePassword);
+
+        User authenticatedUser = (User) auth.getPrincipal();
+
+        userService.changeLastLogin(authenticatedUser);
+
+        String accessToken = tokenService.generateAccessToken(authenticatedUser);
+        String refreshToken = tokenService.generateRefreshToken(authenticatedUser);
+
+        long expiresIn = 15 * 60; // 15 minutos em segundos
+        long refreshExpiresIn = 7 * 24 * 60 * 60; // 7 dias em segundos
+
+        return ResponseEntity.ok(new LoginResponseDTO(accessToken, refreshToken, expiresIn, refreshExpiresIn));
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<LoginResponseDTO> refreshToken(@RequestBody RefreshTokenDTO refreshToken) {
+
+        String email = tokenService.validateToken(refreshToken.refreshToken());
+
+        if (!email.isEmpty() && userService.findByEmail(email).isPresent()) {
+            User user = userService.findByEmail(email).get();
+            String newAccessToken = tokenService.generateAccessToken(user);
+
+            long expiresIn = 15 * 60; // 15 minutos em segundos
+            long refreshExpiresIn = 7 * 24 * 60 * 60; // 7 dias em segundos
+
+            return ResponseEntity.ok(new LoginResponseDTO(newAccessToken, refreshToken.refreshToken(), expiresIn, refreshExpiresIn));
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
 
