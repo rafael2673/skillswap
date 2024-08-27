@@ -1,9 +1,9 @@
 services:
-  authservice:
+  profileservice:
     build: .
-    container_name: AuthService
+    container_name: ProfileService
     ports:
-      - "8081:8081"
+      - "8082:8082"
     environment:
       JAVA_OPTS: -Xms100m -Xmx400m
       RABBIT_HOST: rabbitmq
@@ -30,7 +30,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data # Persistente o volume de dados do banco
     ports:
-      - "5432:5432" # Mapeia a porta 5432 do contêiner para a porta 5432 do host
+      - "5433:5432" # Mapeia a porta 5433 do contêiner para a porta 5433 do host
 
   rabbitmq:
     image: "rabbitmq:3.7-management"

@@ -1,4 +1,4 @@
-package br.com.skillswap.AuthService.configuration;
+package br.com.skillswap.AuthService.config;
 
 import br.com.skillswap.AuthService.infra.security.SecurityFilter;
 import org.springframework.beans.factory.annotation.Autowired;

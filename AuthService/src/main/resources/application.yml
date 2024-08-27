@@ -1,8 +1,16 @@
+server:
+    port: 8081
+
 spring:
     application:
         name: authservice
     liquibase:
         change-log: classpath:db/changelog/db.changelog-master.xml
+    rabbitmq:
+        host: localhost
+        port: 5672
+        username: guest
+        password: guest
 ---
 spring:
     config:

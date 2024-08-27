@@ -1,17 +1,37 @@
 package br.com.skillswap.profileservice.model;
 
+import br.com.skillswap.common.dto.RabbitProfileDTO;
+import br.com.skillswap.profileservice.dto.ProfileUpdateDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 
 @Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "profile")
 public class Profile {
+
+    public Profile(RabbitProfileDTO profileDTO){
+        this.firstName = profileDTO.getFirstName();
+        this.lastName = profileDTO.getLastName();
+        this.userId = profileDTO.getUserId();
+    }
+
+    public Profile(ProfileUpdateDTO profileUpdateDTO) {
+        this.profileId = profileUpdateDTO.getProfileId();
+        this.firstName = profileUpdateDTO.getFirstName();
+        this.lastName = profileUpdateDTO.getLastName();
+        this.userId = profileUpdateDTO.getUserId();
+        this.bio = profileUpdateDTO.getBio();
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,8 +58,8 @@ public class Profile {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "address_id")
-    @OneToOne
+    @JoinColumn(name = "address_id", referencedColumnName = "address_id")
+    @OneToOne(cascade = CascadeType.ALL)
     private Address addressId;
 
 }
