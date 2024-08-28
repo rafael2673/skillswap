@@ -14,7 +14,7 @@ import Section3Login from "./sectionLogin/Section3";
 import LinearIndeterminate from "../Components/LinearIndeterminate";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
-import api from "../services/api";
+import api from "../services/authservice";
 
 const Login: React.FC = () => {
   const [value, setValue] = useState(0);
@@ -65,8 +65,8 @@ const Login: React.FC = () => {
           console.error("Erro na configuração:", error.message);
         }
         setTimeout(() => {
-          setAlert(null); // Limpa o alerta
-        }, 5000); // 5000 milissegundos = 5 segundos
+          setAlert(null); 
+        }, 5000);
       })
       .finally(() => setLoading(false));
   };

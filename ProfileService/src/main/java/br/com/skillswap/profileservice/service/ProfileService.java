@@ -2,15 +2,17 @@ package br.com.skillswap.profileservice.service;
 
 import br.com.skillswap.common.dto.RabbitProfileDTO;
 import br.com.skillswap.profileservice.dto.ProfileUpdateDTO;
+import br.com.skillswap.profileservice.dto.ProfileWithAddressDTO;
 import br.com.skillswap.profileservice.model.Address;
 import br.com.skillswap.profileservice.model.Profile;
 import br.com.skillswap.profileservice.repository.AddressRepository;
 import br.com.skillswap.profileservice.repository.ProfileRepository;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import br.com.skillswap.profileservice.repository.ProfileWithAddressRepositoryCustom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,8 +23,16 @@ public class ProfileService {
     @Autowired
     private AddressRepository addressRepository;
 
+    @Autowired
+    private ProfileWithAddressRepositoryCustom profileWithAddressRepository;
+
     public Optional<Profile> getProfileByUserId(Long userId) {
         return profileRepository.findByUserId(userId);
+    }
+
+
+    public List<ProfileWithAddressDTO> getAllProfiles() {
+        return profileWithAddressRepository.findAllProfiles();
     }
 
 

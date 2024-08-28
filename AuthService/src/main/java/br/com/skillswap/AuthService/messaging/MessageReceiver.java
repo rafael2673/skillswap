@@ -21,7 +21,6 @@ public class MessageReceiver {
         String email = tokenService.validateToken(token);
         if(userService.findByEmail(email).isPresent()) {
             User user = userService.findByEmail(email).get();
-
             return user.getId().toString();
         }
 

@@ -35,7 +35,6 @@ public class UserController {
         } else if (usernameExists) {
             throw new UsernameAlreadyExistsException("O username já foi usado. Por favor, escolha outro username.");
         }
-        System.out.println(registration.getFirstName() + " " + registration.getLastName());
 
         User user = new User(registration);
         UserDTO registeredUser = userService.registerUser(user, registration.getFirstName(), registration.getLastName());

@@ -5,6 +5,7 @@ import Login from "../pages/Login";
 import Timeline from "../pages/Timeline";
 import Match from "../pages/Match";
 import PrivateRoute from "./PrivateRoutes";
+import ProfilePage from "../pages/ProfilePage";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,14 @@ const router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <Match />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/profile",
+    element: (
+      <PrivateRoute>
+        <ProfilePage />
       </PrivateRoute>
     ),
   },

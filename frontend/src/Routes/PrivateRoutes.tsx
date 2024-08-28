@@ -1,6 +1,6 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import api from "../services/api";
+import api from "../services/authservice";
 
 interface PrivateRouteProps {
   children: JSX.Element;
@@ -13,6 +13,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
 
     const expirationTime = sessionStorage.getItem("expirationTime");
     const refreshExpiresIn = sessionStorage.getItem("refreshExpiresIn");
+
     if (
       Date.now() > Number(expirationTime) &&
       Date.now() < Number(refreshExpiresIn)

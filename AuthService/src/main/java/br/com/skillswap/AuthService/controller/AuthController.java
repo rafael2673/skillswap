@@ -41,7 +41,7 @@ public class AuthController {
         String accessToken = tokenService.generateAccessToken(authenticatedUser);
         String refreshToken = tokenService.generateRefreshToken(authenticatedUser);
 
-        long expiresIn = 15 * 60; // 15 minutos em segundos
+        long expiresIn = 14 * 60; // 15 minutos em segundos
         long refreshExpiresIn = 7 * 24 * 60 * 60; // 7 dias em segundos
 
         return ResponseEntity.ok(new LoginResponseDTO(accessToken, refreshToken, expiresIn, refreshExpiresIn));

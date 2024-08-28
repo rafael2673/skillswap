@@ -162,7 +162,7 @@ export default function NavBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <MenuItem key={"Profile"} onClick={handleCloseUserMenu}>
+              <MenuItem key={"Profile"} onClick={() => navigate("/profile")}>
                 <Typography textAlign="center">Profile</Typography>
               </MenuItem>
               <MenuItem key={"Account"} onClick={handleCloseUserMenu}>

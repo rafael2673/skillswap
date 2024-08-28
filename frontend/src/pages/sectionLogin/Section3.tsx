@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-import api from "../../services/api";
+import api from "../../services/authservice";
 import { AxiosError } from "axios";
 
 interface Props {
@@ -27,6 +27,8 @@ const Section3: React.FC<Props> = ({
 }: Props) => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSignUp = () => {
@@ -36,6 +38,8 @@ const Section3: React.FC<Props> = ({
         username,
         email,
         password,
+        firstName,
+        lastName,
       })
       .then(() => {
         handleLogin(email, password);
@@ -57,6 +61,10 @@ const Section3: React.FC<Props> = ({
           setAlert(`Erro: ${error.message}`);
           console.error("Erro na configuração:", error.message);
         }
+
+        setTimeout(() => {
+          setAlert(null); // Limpa o alerta
+        }, 5000);
       })
       .finally(() => setLoading(false));
   };
@@ -64,7 +72,7 @@ const Section3: React.FC<Props> = ({
   return (
     <Box
       sx={{
-        height: { xs: "80vh", md: "75vh" },
+        height: { xs: "100vh", md: "75vh" },
         backgroundColor: "#f5f5f5",
         padding: "3rem",
       }}
@@ -78,6 +86,7 @@ const Section3: React.FC<Props> = ({
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
+          marginTop: { xs: 5, md: 0 },
           height: "69vh",
         }}
       >
@@ -105,6 +114,27 @@ const Section3: React.FC<Props> = ({
           >
             Criar Conta
           </Typography>
+
+          <Box component="form" noValidate autoComplete="off">
+            <div>
+              <TextField
+                id="outlined-basic"
+                label="Nome"
+                value={firstName}
+                sx={{ marginRight: 1, width: "16ch" }}
+                onChange={(e) => setFirstName(e.target.value)}
+                margin="normal"
+              />
+              <TextField
+                id="outlined-basic"
+                label="Sobrenome"
+                value={lastName}
+                sx={{ width: "18.73ch" }}
+                onChange={(e) => setLastName(e.target.value)}
+                margin="normal"
+              />
+            </div>
+          </Box>
           <FormControl sx={{ width: "100%", marginBottom: "1.5rem" }}>
             <TextField
               id="email-input"
