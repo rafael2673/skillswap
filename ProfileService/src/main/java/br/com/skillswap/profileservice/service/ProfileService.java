@@ -31,7 +31,10 @@ public class ProfileService {
     }
 
 
-    public List<ProfileWithAddressDTO> getAllProfiles() {
+    public List<Profile> getAllProfiles() {
+        return profileRepository.findAll();
+    }
+    public List<ProfileWithAddressDTO> getAllProfilesWithAddress() {
         return profileWithAddressRepository.findAllProfiles();
     }
 

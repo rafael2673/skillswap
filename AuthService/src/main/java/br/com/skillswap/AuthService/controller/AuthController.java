@@ -44,7 +44,8 @@ public class AuthController {
         long expiresIn = 14 * 60; // 15 minutos em segundos
         long refreshExpiresIn = 7 * 24 * 60 * 60; // 7 dias em segundos
 
-        return ResponseEntity.ok(new LoginResponseDTO(accessToken, refreshToken, expiresIn, refreshExpiresIn));
+        return ResponseEntity.ok(new LoginResponseDTO(accessToken, refreshToken, expiresIn, refreshExpiresIn,
+                authenticatedUser.getRole()));
     }
 
     @PostMapping("/refresh-token")
@@ -59,7 +60,8 @@ public class AuthController {
             long expiresIn = 15 * 60; // 15 minutos em segundos
             long refreshExpiresIn = 7 * 24 * 60 * 60; // 7 dias em segundos
 
-            return ResponseEntity.ok(new LoginResponseDTO(newAccessToken, refreshToken.refreshToken(), expiresIn, refreshExpiresIn));
+            return ResponseEntity.ok(new LoginResponseDTO(newAccessToken, refreshToken.refreshToken(), expiresIn,
+                    refreshExpiresIn, user.getRole()));
         }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

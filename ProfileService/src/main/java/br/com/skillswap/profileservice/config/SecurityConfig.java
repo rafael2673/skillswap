@@ -50,6 +50,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.GET, "/profile/all").hasRole("MODERATOR")
+                        .requestMatchers(HttpMethod.POST, "/skill").hasRole("MODERATOR")
+                        .requestMatchers(HttpMethod.PUT, "/skill").hasRole("MODERATOR")
+                        .requestMatchers(HttpMethod.DELETE, "/skill").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)

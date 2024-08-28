@@ -68,8 +68,9 @@ public class AuthorizationServiceTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken").isNotEmpty())
                 .andExpect(jsonPath("$.refreshToken").isNotEmpty())
-                .andExpect(jsonPath("$.expiresIn").value(15 * 60))
-                .andExpect(jsonPath("$.refreshExpiresIn").value(7 * 24 * 60 * 60));
+                .andExpect(jsonPath("$.expiresIn").value(14 * 60))
+                .andExpect(jsonPath("$.refreshExpiresIn").value(7 * 24 * 60 * 60))
+                .andExpect(jsonPath("$.role").isNotEmpty());
     }
 
     @Test

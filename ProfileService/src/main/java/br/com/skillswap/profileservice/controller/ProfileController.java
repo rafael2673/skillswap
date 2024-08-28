@@ -30,10 +30,13 @@ public class ProfileController {
         Optional<Profile> profile = profileService.getProfileByUserId(userId);
         return profile.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
-
     @GetMapping("/all")
-    public ResponseEntity<List<ProfileWithAddressDTO>> getAllProfiles(){
+    public ResponseEntity<List<Profile>> getAllProfiles(){
         return ResponseEntity.ok(profileService.getAllProfiles());
+    }
+    @GetMapping("-address/all")
+    public ResponseEntity<List<ProfileWithAddressDTO>> getAllProfilesWithAddress(){
+        return ResponseEntity.ok(profileService.getAllProfilesWithAddress());
     }
 
 

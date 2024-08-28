@@ -2,6 +2,7 @@ package br.com.skillswap.AuthService.controller;
 
 import br.com.skillswap.AuthService.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +12,6 @@ import br.com.skillswap.AuthService.exception.UsernameAlreadyExistsException;
 import br.com.skillswap.AuthService.model.User;
 import br.com.skillswap.AuthService.service.UserService;
 import jakarta.validation.Valid;
-
-
-/**
- * UserController
- */
 
 @RestController
 @Validated
@@ -38,7 +34,7 @@ public class UserController {
 
         User user = new User(registration);
         UserDTO registeredUser = userService.registerUser(user, registration.getFirstName(), registration.getLastName());
-        return ResponseEntity.ok(registeredUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(registeredUser);
     }
 
 

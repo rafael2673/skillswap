@@ -32,21 +32,21 @@ services:
     ports:
       - "5433:5432" # Mapeia a porta 5433 do contêiner para a porta 5433 do host
 
-  rabbitmq:
-    image: "rabbitmq:3.7-management"
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    healthcheck:
-      test: "/opt/rabbitmq/sbin/rabbitmqctl status"
-      interval: 2s
-      timeout: 30s
-      retries: 15
-    restart: always
-    deploy:
-      resources:
-        limits:
-          memory: 512M
+  #rabbitmq:
+   # image: "rabbitmq:3.7-management"
+    #ports:
+     # - "5672:5672"
+     # - "15672:15672"
+    #healthcheck:
+     # test: "/opt/rabbitmq/sbin/rabbitmqctl status"
+      #interval: 2s
+      #timeout: 30s
+      #retries: 15
+    #restart: always
+    #deploy:
+     # resources:
+      #  limits:
+       #   memory: 512M
 
 volumes:
   postgres_data: {} # Define um volume sem nome para armazenar os dados do banco
