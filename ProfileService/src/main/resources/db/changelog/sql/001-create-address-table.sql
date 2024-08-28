@@ -11,3 +11,8 @@ CREATE TABLE address (
 );
 
 -- rollback DROP TABLE address
+
+-- changeset Rafael:004
+ALTER TABLE IF EXISTS address ADD COLUMN IF NOT EXISTS complement varchar(100);
+
+-- rollback ALTER TABLE IF EXISTS address DROP COLUMN IF EXISTS complement;

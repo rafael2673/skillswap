@@ -10,7 +10,6 @@ CREATE TABLE profile (
    picture_url TEXT,
    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
    address_id INTEGER,
-
    constraint fk_address_id FOREIGN KEY (address_id) references address(address_id)
 
 );
