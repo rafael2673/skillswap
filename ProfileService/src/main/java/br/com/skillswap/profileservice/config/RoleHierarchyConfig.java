@@ -1,4 +1,4 @@
-package br.com.skillswap.AuthService.configuration;
+package br.com.skillswap.profileservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +13,8 @@ public class RoleHierarchyConfig {
     @Bean
     static RoleHierarchy roleHierarchy() {
         return RoleHierarchyImpl.withDefaultRolePrefix()
-                .role("ADMIN").implies("MODERAT0R")
-                .role("MODERAT0R").implies("USER")
+                .role("ADMIN").implies("MODERATOR")
+                .role("MODERATOR").implies("USER")
                 .build();
     }
 

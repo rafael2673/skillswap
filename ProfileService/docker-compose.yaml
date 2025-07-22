@@ -1,0 +1,52 @@
+services:
+  profileservice:
+    build: .
+    container_name: ProfileService
+    ports:
+      - "8082:8082"
+    environment:
+      JAVA_OPTS: -Xms100m -Xmx400m
+      RABBIT_HOST: rabbitmq
+      SPRING_PROFILES_ACTIVE: dev
+      DB_URL_DEV: ${DB_URL_DEV}
+      DB_USERNAME_DEV: ${DB_USERNAME_DEV}
+      DB_PASSWORD_DEV: ${DB_PASSWORD_DEV}
+    depends_on:
+      #- rabbitmq
+      - db
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  db:
+    image: postgres # Imagem oficial do PostgreSQL
+    restart: unless-stopped # Reinicia automaticamente o contêiner em caso de falha
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASS_DEV} # Senha do banco de dados (substitua por uma senha segura)
+      POSTGRES_USER: ${DB_USER_DEV} # Usuário padrão do PostgreSQL
+      POSTGRES_DB: ${DB_DATABASE_DEV} # Nome do banco de dados (opcional)
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persistente o volume de dados do banco
+    ports:
+      - "5433:5432" # Mapeia a porta 5433 do contêiner para a porta 5433 do host
+
+  #rabbitmq:
+   # image: "rabbitmq:3.7-management"
+    #ports:
+     # - "5672:5672"
+     # - "15672:15672"
+    #healthcheck:
+     # test: "/opt/rabbitmq/sbin/rabbitmqctl status"
+      #interval: 2s
+      #timeout: 30s
+      #retries: 15
+    #restart: always
+    #deploy:
+     # resources:
+      #  limits:
+       #   memory: 512M
+
+volumes:
+  postgres_data: {} # Define um volume sem nome para armazenar os dados do banco

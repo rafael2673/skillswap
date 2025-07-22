@@ -5,20 +5,31 @@ import java.util.Collection;
 import java.util.List;
 
 
+import br.com.skillswap.AuthService.dto.RegistrationDTO;
 import br.com.skillswap.AuthService.model.Enum.UserRoles;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
 public class User implements UserDetails {
+
+    public User(RegistrationDTO registrationDTO) {
+        this.username = registrationDTO.getUsername();
+        this.email = registrationDTO.getEmail();
+        this.password = registrationDTO.getPassword();
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,7 +63,7 @@ public class User implements UserDetails {
 
 
     /**
-     * @return
+     * @return Collection<? extends GrantedAuthority>
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
